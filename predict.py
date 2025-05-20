@@ -4,27 +4,27 @@ import json
 import joblib
 
 def main():
-    # Загружаем модель (предполагается, что это Pipeline с Vectorizer + классификатором)
+    # Загрузка модели
     model = joblib.load("news_ensemble_model.pkl")
 
-    # Получаем текст из аргументов
+    # Получаем вход из аргумента
     if len(sys.argv) < 2:
-        print(json.dumps({"error": "No input text provided"}))
+        print(json.dumps({"error": "No input provided"}))
         sys.exit(1)
     text = sys.argv[1]
 
-    # Делаем предсказание вероятностей
-    proba = model.predict_proba([text])[0]  # массив вида [p0, p1, ..., pN]
-    classes = model.classes_               # массив меток классов
+    # Предсказание
+    proba = model.predict_proba([text])[0]
+    classes = model.classes_.tolist()
+    probabilities = [round(p * 100, 2) for p in proba]
+    prediction = classes[probabilities.index(max(probabilities))]
 
-    # Собираем результат
+    # Выводим JSON
     result = {
-        "classes": classes.tolist(),
-        "probabilities": [round(float(p) * 100, 2) for p in proba],  # в процентах, округлено до сотых
-        "prediction": classes[proba.argmax()]                       # класс с максимальной вероятностью
+        "classes": classes,
+        "probabilities": probabilities,
+        "prediction": prediction
     }
-
-    # Печатаем JSON в stdout
     print(json.dumps(result, ensure_ascii=False))
 
 if __name__ == "__main__":
