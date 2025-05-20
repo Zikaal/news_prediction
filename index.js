@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 
 app.post('/predict', (req, res) => {
   const text = req.body.text;
-  PythonShell.run('predict.py', {
+  PythonShell.run('app.py', {
     args: [text],
     pythonOptions: ['-u'],
     scriptPath: __dirname
