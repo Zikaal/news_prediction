@@ -5,19 +5,19 @@ const { PythonShell } = require('python-shell');
 const app  = express();
 const port = process.env.PORT || 3000;
 
-// 1) Разбираем JSON и формы
+// 1) Парсинг JSON и форм
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 2) Раздаём статические файлы из папки static/
+// 2) Раздача статики (CSS, картинки и пр.) из папки static/
 app.use(express.static(path.join(__dirname, 'static')));
 
-// 3) Главная страница — отдаём готовый HTML
+// 3) Главная страница — чистый HTML
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'templates', 'index.html'));
 });
 
-// 4) API /predict — запускаем Python-скрипт и возвращаем JSON
+// 4) Обработчик POST /predict
 app.post('/predict', (req, res) => {
   const text = req.body.text_input || '';
   PythonShell.run('predict.py', {
@@ -39,5 +39,5 @@ app.post('/predict', (req, res) => {
   });
 });
 
-// 5) Старт сервера
+// 5) Запуск
 app.listen(port, () => console.log(`Listening on http://localhost:${port}`));
