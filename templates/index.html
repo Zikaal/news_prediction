@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Category Predictor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>News Category Predictor</h1>
+    <form method="post">
+      <textarea name="news_text" placeholder="Enter news text here..." required>{{ text_input }}</textarea>
+      <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result">
+      <h2>Predicted Category: {{ prediction }}</h2>
+      <canvas id="probaChart" width="400" height="200"></canvas>
+    </div>
+    <script>
+      const classes = JSON.parse('{{ classes|safe }}');
+      const probs   = JSON.parse('{{ probabilities|safe }}');
+      const ctx     = document.getElementById('probaChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: classes,
+          datasets: [{
+            label: 'Probability (%)',
+            data: probs
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+    </script>
+    {% endif %}
+  </div>
+</body>
+</html>
