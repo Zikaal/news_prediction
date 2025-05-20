@@ -1,6 +1,6 @@
-const express     = require('express');
-const path        = require('path');
-const fs          = require('fs');
+const express       = require('express');
+const path          = require('path');
+const fs            = require('fs');
 const { PythonShell } = require('python-shell');
 
 const app  = express();
@@ -18,16 +18,15 @@ app.post('/predict', (req, res) => {
   const text = req.body.text_input || '';
   console.log('[/predict] received text:', text);
 
-  // ---- ДИАГНОСТИКА ФАЙЛОВ ----
   const scriptFile = path.join(__dirname, 'predict.py');
   console.log('[/predict] looking for predict.py at:', scriptFile);
   console.log('[/predict] exists?', fs.existsSync(scriptFile));
-  // -----------------------------
 
   PythonShell.run('predict.py', {
-    args: [text],
+    pythonPath: 'python3',          // <-- Явно
     pythonOptions: ['-u'],
-    scriptPath: __dirname
+    scriptPath: __dirname,
+    args: [text]
   }, (err, results) => {
     if (err) {
       console.error('[/predict] PythonShell error:', err);
