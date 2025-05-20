@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 // 4) API /predict — запускаем Python-скрипт и возвращаем JSON
 app.post('/predict', (req, res) => {
   const text = req.body.text_input || '';
-  PythonShell.run('app.py', {
+  PythonShell.run('predict.py', {
     args: [text],
     pythonOptions: ['-u'],
     scriptPath: __dirname
